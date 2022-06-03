@@ -5,7 +5,7 @@ import streamlit as st
 import os
 
 # set dir
-os.chdir('C:/Users/Luiz/OneDrive/Documentos/Marcelao/PGFA/AutoAvaliacao')
+os.chdir('Dados/')
 
 # Create dashboard to show the table data and the graph
 
