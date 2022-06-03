@@ -1,4 +1,4 @@
 pandas
 openpyxl
-streamlit=1.10.0
+streamlit==1.10.0
 plotly
