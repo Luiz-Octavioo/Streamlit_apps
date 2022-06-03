@@ -2,39 +2,56 @@
 import pandas as pd
 import plotly.express as px
 import streamlit as st
-import os
 
-# set dir
-os.chdir('C:/Users/Luiz/OneDrive/Documentos/Marcelao/PGFA/AutoAvaliacao')
+# set to wide mode
+st.set_page_config(layout="wide")
+# Get dataframe with streamlit
+header = st.container()
+user_input = st.container()
+output_graphs = st.container()
+author_credits = st.container()
+
 
 # Create dashboard to show the table data and the graph
 
 ###############################################################################
 # Prepare the data
 # get all files in the folder
-files = ['%_do_IndArtigo_dos_30%_dos_DPs_mais_produtivos.xlsx', 'DP_Orientacao_docente_andamento.xlsx', 'DP_Orientacao_docente_concluida.xlsx',
-         'DPs_Turmas_ministradas.xlsx', 'Média_capitulo_livro_por_DPs_por_ano.xlsx', 'Média_de_artigos_B1_A1_A2_B1_com_discentes_DPs.xlsx',
-         'Média_de_artigos_B1_A1_A2_B1_dos_DPs_por_ano.xlsx', 'Média_de_cursos_de_curta_duração_dos_DPs_por_ano.xlsx',
-         'Média_de_livros_publicados_dos_Dps_por_ano.xlsx', 'Média_de_organizações_de_eventos_dos_DPs_por_ano.xlsx', 'Média_de_produtos_de_editoria_dos_DPs_por_ano.xlsx',
-         'Média_de_registros_patentes_DPs_por_ano.xlsx', 'Média_ponderada_de_artigos_IndArtigo_com_discentes_por_DPs_por_ano.xlsx',
-         'Média_ponderada_de_artigos_IndArtigo_por_DPs_por_ano.xlsx', 'Percentual_de_DP_com_artigo_B1_A1_A2_B1_por_ano.xlsx']
+files = ['%_do_IndArtigo_dos_30%_dos_DPs_mais_produtivos.xlsx', 'DP_Orientacao_docente_andamento.xlsx',
+         'DP_Orientacao_docente_concluida.xlsx',
+         'DPs_Turmas_ministradas.xlsx', 'Media_capitulo_livro_por_DPs_por_ano.xlsx',
+         'Media_de_artigos_B1_A1_A2_B1_com_discentes_DPs.xlsx',
+         'Media_de_artigos_B1_A1_A2_B1_dos_DPs_por_ano.xlsx', 'Media_de_cursos_de_curta_duração_dos_DPs_por_ano.xlsx',
+         'Media_de_livros_publicados_dos_Dps_por_ano.xlsx', 'Media_de_organizações_de_eventos_dos_DPs_por_ano.xlsx',
+         'Media_de_produtos_de_editoria_dos_DPs_por_ano.xlsx',
+         'Media_de_registros_patentes_DPs_por_ano.xlsx',
+         'Media_ponderada_de_artigos_IndArtigo_com_discentes_por_DPs_por_ano.xlsx',
+         'Media_ponderada_de_artigos_IndArtigo_por_DPs_por_ano.xlsx',
+         'Percentual_de_DP_com_artigo_B1_A1_A2_B1_por_ano.xlsx']
 
 print(files)
 
 # lista com os titulos
-titles = ['% do IndArtigo_dos_30%_dos_DPs_mais_produtivos', 'DP_Orientacao_docente_andamento', 'DP_Orientacao_docente_concluida',
-         'DPs_Turmas_ministradas', 'Média_capitulo_livro_por_DPs_por_ano', 'Média_de_artigos_B1_A1_A2_B1_com_discentes_DPs',
-         'Média_de_artigos_B1_A1_A2_B1_dos_DPs_por_ano', 'Média_de_cursos_de_curta_duração_dos_DPs_por_ano',
-         'Média_de_livros_publicados_dos_Dps_por_ano', 'Média_de_organizações_de_eventos_dos_DPs_por_ano', 'Média_de_produtos_de_editoria_dos_DPs_por_ano',
-         'Média_de_registros_patentes_DPs_por_ano', 'Média_ponderada_de_artigos_IndArtigo_com_discentes_por_DPs_por_ano',
-         'Média_ponderada_de_artigos_IndArtigo_por_DPs_por_ano', 'Percentual_de_DP_com_artigo_B1_A1_A2_B1_por_ano']
+titles = ['% do IndArtigo_dos_30%_dos_DPs_mais_produtivos', 'DP_Orientacao_docente_andamento',
+          'DP_Orientacao_docente_concluida',
+          'DPs_Turmas_ministradas', 'Média_capitulo_livro_por_DPs_por_ano',
+          'Média_de_artigos_B1_A1_A2_B1_com_discentes_DPs',
+          'Média_de_artigos_B1_A1_A2_B1_dos_DPs_por_ano', 'Média_de_cursos_de_curta_duração_dos_DPs_por_ano',
+          'Média_de_livros_publicados_dos_Dps_por_ano', 'Média_de_organizações_de_eventos_dos_DPs_por_ano',
+          'Média_de_produtos_de_editoria_dos_DPs_por_ano',
+          'Média_de_registros_patentes_DPs_por_ano',
+          'Média_ponderada_de_artigos_IndArtigo_com_discentes_por_DPs_por_ano',
+          'Média_ponderada_de_artigos_IndArtigo_por_DPs_por_ano', 'Percentual_de_DP_com_artigo_B1_A1_A2_B1_por_ano']
 
+# git_path = 'https://github.com/Luiz-Octavioo/Streamlit_apps/raw/main/Dados/'
+path = 'Dados/'
 
 # Load data from files
+# @st.cache(allow_output_mutation=True)
 def load_data():
     dataframes = []
     for file in files:
-        df = pd.read_excel(file, sheet_name="Planilha1")
+        df = pd.read_excel(path+file, sheet_name="Planilha1")
         dataframes.append(df)
     return dataframes
 
@@ -92,19 +109,11 @@ def get_df(title):
         if df['Title'][0] == title:
             return df.drop(df.columns[[4, 8]], axis=1)
 
+
 # print(dfs_organizedI)
 
 ##############################################################################
 # DASHBOARD
-# set to wide mode
-st.set_page_config(layout="wide")
-# Get dataframe with streamlit
-header = st.container()
-user_input = st.container()
-output_graphs = st.container()
-author_credits = st.container()
-
-
 
 with header:
     st.title("Analise de dados sobre os Programas de Pós-Graduação")
