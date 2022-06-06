@@ -1,3 +1,18 @@
+# -------------------------------------------------------------------------------#
+# -----------------------------Streamlit Dashboard-------------------------------#
+# Create by: Luiz Octavio                                                        #
+# LAB: Grupo de Pesquisa em Interação Biosfera-Atmosfera                         #
+# Universidade Federal do Estado de Mato Grosso                                  #
+# Mestre e Doutorando no Programa de Pós Graduação em Fisica Ambiental           #
+# Cuiabá, Mato Grosso                                                            #
+#                                                                                #
+#                                                                                #
+#                                                                                #
+# Version: 0.1                                                                   #
+# Contato:luizpgfa@gmail.com | luizoctavio@fisica.ufmt.br                        #
+# -------------------------------------------------------------------------------#
+
+
 # import libs
 import pandas as pd
 import plotly.express as px
@@ -29,19 +44,19 @@ files = ['%_do_IndArtigo_dos_30%_dos_DPs_mais_produtivos.xlsx', 'DP_Orientacao_d
          'Media_ponderada_de_artigos_IndArtigo_por_DPs_por_ano.xlsx',
          'Percentual_de_DP_com_artigo_B1_A1_A2_B1_por_ano.xlsx']
 
-print(files)
+# print(files)
 
 # lista com os titulos
 titles = ['% do IndArtigo_dos_30%_dos_DPs_mais_produtivos', 'DP_Orientacao_docente_andamento',
           'DP_Orientacao_docente_concluida',
           'DPs_Turmas_ministradas', 'Média_capitulo_livro_por_DPs_por_ano',
-          'Média_de_artigos_B1_A1_A2_B1_com_discentes_DPs',
-          'Média_de_artigos_B1_A1_A2_B1_dos_DPs_por_ano', 'Média_de_cursos_de_curta_duração_dos_DPs_por_ano',
+          'Média_de_artigos_B1(A1, A2 e B1)_com_discentes_DPs',
+          'Média_de_artigos_B1(A1, A2 e B1)_dos_DPs_por_ano', 'Média_de_cursos_de_curta_duração_dos_DPs_por_ano',
           'Média_de_livros_publicados_dos_Dps_por_ano', 'Média_de_organizações_de_eventos_dos_DPs_por_ano',
           'Média_de_produtos_de_editoria_dos_DPs_por_ano',
           'Média_de_registros_patentes_DPs_por_ano',
           'Média_ponderada_de_artigos_IndArtigo_com_discentes_por_DPs_por_ano',
-          'Média_ponderada_de_artigos_IndArtigo_por_DPs_por_ano', 'Percentual_de_DP_com_artigo_B1_A1_A2_B1_por_ano']
+          'Média_ponderada_de_artigos_IndArtigo_por_DPs_por_ano', 'Percentual_de_DP_com_artigo_B1(A1, A2 e B1)_por_ano']
 
 # git_path = 'https://github.com/Luiz-Octavioo/Streamlit_apps/raw/main/Dados/'
 path = 'Dados/'
@@ -116,7 +131,7 @@ def get_df(title):
 # DASHBOARD
 
 with header:
-    st.title("Analise de dados sobre os Programas de Pós-Graduação")
+    st.title("Indicadores sobre os Programas de Pós-Graduação conceito 4 da CAPES (2017-2020).")
 
 # SIDEBAR
 with user_input:
@@ -130,20 +145,38 @@ with user_input:
     # subtitle
     st.subheader(a)
 
-    # show dataframe
-    st.dataframe(dataframe)
+    # highlight the FA/UFMT/MT in dataframe
+    color = (dataframe['PPG_Acrony'] == 'FA/UFMT/MT').map({True: 'background-color: firebrick', False: ''})
+
+
+    # show dataframe and hide the index
+    st.dataframe(dataframe.style.apply(lambda x: color))
+
 
 # GRAPHS
 with output_graphs:
-    st.header('Gráficos')
-    # Plotly
-    fig = px.bar(dataframe, x='PPG_Acrony', y='INDICADOR', color='INDICADOR',
-                 hover_data=['PPG', 'IES', 'UF', 'INDICADOR'],
-                 color_continuous_scale='magma', template='plotly_dark')
+    st.header('Gráfico sobre o Indicador:')
+    # Plotly if dark mode
+    if st.checkbox('Modo escuro'):
+        fig = px.bar(dataframe, x='PPG_Acrony', y='INDICADOR', color='INDICADOR',
+                     hover_data=['PPG', 'IES', 'UF', 'INDICADOR'],
+                     color_continuous_scale='Reds', template='plotly_dark')
+    else:
+
+        fig = px.bar(dataframe, x='PPG_Acrony', y='INDICADOR', color='INDICADOR',
+                     hover_data=['PPG', 'IES', 'UF', 'INDICADOR'],
+                     color_continuous_scale='Reds', template='plotly_white')
+
+        # Change color background
+        fig.update_layout(plot_bgcolor="white", paper_bgcolor="white",
+                          xaxis=dict(showgrid=False),
+                          yaxis=dict(showgrid=False))
 
     # add labels and center titles
-    fig.update_layout(title_text=a, xaxis_title='Programa de Pós-Graduação', yaxis_title='')
-    # fig.update_layout(title_x=0.5)
+    fig.update_layout(title_text=a + ' (2017-2020)', xaxis_title='Programa de Pós-Graduação', yaxis_title='')
+
+    # Rotate x-axis labels
+    fig.update_layout(xaxis_tickangle=-45)
 
     # add annotations to idx_FA
     fig.add_annotation(
@@ -154,7 +187,12 @@ with output_graphs:
         arrowhead=7,
         arrowsize=2,
         arrowwidth=1,
-        arrowcolor='white',
+        arrowcolor='black',
+        font=dict(
+            family="Courier New, monospace",
+            size=16,
+            color="white"
+        ),
         xref='x',
         yref='y',
         align='center',
@@ -167,11 +205,15 @@ with output_graphs:
     fig.update_layout(height=600, width=900)
 
     # show plot and change location to displayModeBar
-    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True, 'responsive': True})
+    st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True, 'responsive': False})
 
-# AUTHOR CREDITS
-with author_credits:
-    st.header('Créditos')
-    st.markdown("""
-    #### Por: [Luiz Octávio](http://lattes.cnpq.br/0811571185673375)
-    """, unsafe_allow_html=True)
+# # AUTHOR CREDITS
+# with author_credits:
+#     st.header('Créditos')
+#     st.markdown("""
+#     #### Por: [Luiz Octávio](http://lattes.cnpq.br/0811571185673375)
+#     """,unsafe_allow_html=True)
+
+# add figure to st.markdown in bottom left corner page
+path_fig = 'https://pgfa.ufmt.br/images/logo-pgfa-v4.png'
+st.markdown(f'<img src="{path_fig}" alt="logo" style="width:450px;height:100px;">', unsafe_allow_html=True)
