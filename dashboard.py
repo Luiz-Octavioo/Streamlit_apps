@@ -10,6 +10,7 @@
 #                                                                                #
 # Version: 0.1                                                                   #
 # Contato:luizpgfa@gmail.com | luizoctavio@fisica.ufmt.br                        #
+# Lattes: http://lattes.cnpq.br/0811571185673375                                 #
 # -------------------------------------------------------------------------------#
 
 
@@ -153,24 +154,27 @@ with user_input:
     st.dataframe(dataframe.style.apply(lambda x: color))
 
 
+# if theme of streamlit is dark, change the color of the chart
+
+
 # GRAPHS
 with output_graphs:
     st.header('Gráfico sobre o Indicador:')
     # Plotly if dark mode
-    if st.checkbox('Modo escuro'):
+    if st.checkbox('Modo escuro', value=True):
         fig = px.bar(dataframe, x='PPG_Acrony', y='INDICADOR', color='INDICADOR',
                      hover_data=['PPG', 'IES', 'UF', 'INDICADOR'],
                      color_continuous_scale='Reds', template='plotly_dark')
-    else:
 
+    else:
         fig = px.bar(dataframe, x='PPG_Acrony', y='INDICADOR', color='INDICADOR',
                      hover_data=['PPG', 'IES', 'UF', 'INDICADOR'],
                      color_continuous_scale='Reds', template='plotly_white')
 
         # Change color background
         fig.update_layout(plot_bgcolor="white", paper_bgcolor="white",
-                          xaxis=dict(showgrid=False),
-                          yaxis=dict(showgrid=False))
+            xaxis=dict(showgrid=False),
+                          yaxis=dict(showgrid=False)) # plot_bgcolor="white", paper_bgcolor="white"
 
     # add labels and center titles
     fig.update_layout(title_text=a + ' (2017-2020)', xaxis_title='Programa de Pós-Graduação', yaxis_title='')
@@ -206,13 +210,6 @@ with output_graphs:
 
     # show plot and change location to displayModeBar
     st.plotly_chart(fig, use_container_width=True, config={'displayModeBar': True, 'responsive': False})
-
-# # AUTHOR CREDITS
-# with author_credits:
-#     st.header('Créditos')
-#     st.markdown("""
-#     #### Por: [Luiz Octávio](http://lattes.cnpq.br/0811571185673375)
-#     """,unsafe_allow_html=True)
 
 # add figure to st.markdown in bottom left corner page
 path_fig = 'https://pgfa.ufmt.br/images/logo-pgfa-v4.png'
